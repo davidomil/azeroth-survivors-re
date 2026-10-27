@@ -648,6 +648,7 @@ dependencies = [
  "bevy",
  "image",
  "js-sys",
+ "naga",
  "serde",
  "wasm-bindgen",
  "wasm-bindgen-futures",

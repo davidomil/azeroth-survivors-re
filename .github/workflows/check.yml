@@ -72,3 +72,5 @@ jobs:
         run: |
           cargo test -p benilla-world --lib rig_anim::compose --no-default-features
           cargo test -p benilla-world --lib web_budget --no-default-features
+      - name: Safari point-light shader literals
+        run: cargo test -p benilla-assets --test point_lights --no-default-features

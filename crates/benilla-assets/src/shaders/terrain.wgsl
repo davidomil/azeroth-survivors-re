@@ -79,8 +79,9 @@ const TERRAIN_REACH: f32 = 33.570166;
 // wow_model.wgsl uses the packed per-light range: the lanes differ on purpose.
 fn point_light_sum(P: vec3<f32>, N: vec3<f32>, anchor: vec3<f32>) -> vec3<f32> {
     let count = u32(wow_light.point_count.x);
-    var sel = array<u32, 3>(0u, 0u, 0u);
-    var sd = array<f32, 3>(1e30, 1e30, 1e30);
+    // The live count is outside the table and marks an unfilled light slot.
+    var sel = array<u32, 3>(count, count, count);
+    var sd = array<f32, 3>();
     for (var i = 0u; i < count; i = i + 1u) {
         let pos_range = wow_light.points[2u * i];
         let dv = pos_range.xyz - anchor;
@@ -90,20 +91,20 @@ fn point_light_sum(P: vec3<f32>, N: vec3<f32>, anchor: vec3<f32>) -> vec3<f32> {
         if (max(abs(dv.x), abs(dv.z)) > TERRAIN_REACH) {
             continue;
         }
-        if (d2 < sd[0]) {
+        if (sel[0] == count || d2 < sd[0]) {
             sd[2] = sd[1]; sel[2] = sel[1];
             sd[1] = sd[0]; sel[1] = sel[0];
             sd[0] = d2; sel[0] = i;
-        } else if (d2 < sd[1]) {
+        } else if (sel[1] == count || d2 < sd[1]) {
             sd[2] = sd[1]; sel[2] = sel[1];
             sd[1] = d2; sel[1] = i;
-        } else if (d2 < sd[2]) {
+        } else if (sel[2] == count || d2 < sd[2]) {
             sd[2] = d2; sel[2] = i;
         }
     }
     var sum = vec3<f32>(0.0);
     for (var s = 0u; s < 3u; s = s + 1u) {
-        if (sd[s] > 9.9e29) {
+        if (sel[s] == count) {
             break;
         }
         let pos_range = wow_light.points[2u * sel[s]];
