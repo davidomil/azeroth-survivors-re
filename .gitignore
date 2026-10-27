@@ -52,3 +52,7 @@ __pycache__/
 # The C sysroot for the wasm Lua build — fetched by scripts/web-setup.sh, ~300 MB
 /tools/wasi-sdk/
 /tools/binaryen/
+
+# Machine-specific Compose configuration and the exported public local CA certificate.
+/.env
+/azeroth-survivors-root.crt

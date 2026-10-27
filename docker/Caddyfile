@@ -1,0 +1,11 @@
+{
+	admin off
+	auto_https disable_redirects
+}
+
+https://{$GAME_HOST} {
+	tls internal
+	@relay path /ws/*
+	respond @relay 404
+	reverse_proxy game:8090
+}
