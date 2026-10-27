@@ -33,3 +33,6 @@ js-sys = "0.3.99"
 web-sys = { version = "0.3.99", features = ["Window", "Response", "Request"] }
 
 web-time = "1"
+
+[dev-dependencies]
+naga = { version = "=27.0.3", features = ["wgsl-in", "wgsl-out"] }
