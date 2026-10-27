@@ -1,0 +1,58 @@
+name: azeroth-survivors
+
+services:
+  game:
+    image: azeroth-survivors:local
+    build:
+      context: .
+      target: runtime
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    volumes:
+      - type: bind
+        source: ${WOW_DATA_DIR:-./wow-data}/Data
+        target: /wow-data/Data
+        read_only: true
+        bind:
+          create_host_path: false
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      game:
+        condition: service_healthy
+    environment:
+      GAME_HOST: ${GAME_HOST:-localhost}
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${HTTPS_PORT:-8443}:443"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  fetch-data:
+    profiles: [tools]
+    build:
+      context: .
+      target: fetch-data
+    environment:
+      WOW_DATA_URL: ${WOW_DATA_URL:-https://archive.org/download/WoW_1.12.1-5875/1.12.1-5875_enUS.zip}
+    volumes:
+      - ${WOW_DATA_DIR:-./wow-data}:/wow-data
+
+volumes:
+  caddy_data:
+  caddy_config:

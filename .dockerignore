@@ -1,0 +1,17 @@
+.git
+.env
+.env.*
+!.env.example
+debug_tooling
+target
+tools
+wow-data
+WoW
+extracted
+out
+benilla-config
+.probe-identity
+web/dist
+**/tests/fixtures
+trace-*.json
+__pycache__

@@ -49,6 +49,8 @@ minutes. **No server, no login, no account** — fully offline and self-containe
 
 ## Play it
 
+For Docker Compose and private LAN hosting with HTTPS, follow [the Docker guide](docker/README.md).
+
 ```bash
 git clone https://github.com/OutThisLife/azeroth-survivors-re
 cd azeroth-survivors-re
